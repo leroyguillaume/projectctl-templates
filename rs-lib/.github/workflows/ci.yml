@@ -1,0 +1,72 @@
+---
+name: ci
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/ci.yml
+      - "Cargo.*"
+      - "**.rs"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Restore cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo
+            target
+          key: cargo-${{ hashFiles('Cargo.toml') }}
+
+      - name: Run cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+  pre-commit:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Restore cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo
+            target
+          key: cargo-${{ hashFiles('Cargo.toml') }}
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.0
+
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Restore cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo
+            target
+          key: cargo-${{ hashFiles('Cargo.toml') }}
+
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test

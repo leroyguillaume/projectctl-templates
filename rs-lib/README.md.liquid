@@ -1,0 +1,9 @@
+{% if repository-url %}
+![ci]({{ repository-url }}/actions/workflows/ci.yml/badge.svg)
+{% endif %}
+
+# {{ name }}
+
+{% if description %}
+{{ description }}
+{% endif %}
