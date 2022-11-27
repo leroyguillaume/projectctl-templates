@@ -1,0 +1,38 @@
+---
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Restore cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo
+            target
+          key: cargo-${{ hashFiles('Cargo.toml') }}
+
+      - name: Install cargo-get
+        run: cargo install cargo-get
+
+      - name: Get project metadata
+        id: metadata
+        run: echo "version=$(cargo get version)" >> $GITHUB_OUTPUT
+
+      - name: Check version matches tag
+        env:
+          VERSION: ${{ steps.metadata.outputs.version }}
+        run: '[[ v$VERSION == $GITHUB_REF_NAME ]]'
+
+      - name: Run cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish

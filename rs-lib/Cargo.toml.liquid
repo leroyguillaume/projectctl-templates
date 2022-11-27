@@ -1,0 +1,18 @@
+[package]
+name = "{{ name }}"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["{{ git_user_name }} <{{ git_user_email }}"]
+{% if description -%}
+description = "{{ description }}"
+{%- endif -%}
+{%- if repository-url -%}
+repository = "{{ repository-url }}"
+{%- endif %}
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dev-dependencies]
