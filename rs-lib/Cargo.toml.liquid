@@ -3,7 +3,7 @@ name = "{{ name }}"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["{{ git_user_name }} <{{ git_user_email }}"]
+authors = ["{{ git.user.name }} <{{ git.user.email }}"]
 {% if description -%}
 description = "{{ description }}"
 {%- endif -%}
